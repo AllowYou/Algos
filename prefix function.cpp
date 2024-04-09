@@ -1,4 +1,4 @@
-vector<int> prefix_function(string s){
+vector<int> prefix_function(string &s){
     vector<int> p(s.size());
     for (int i = 1; i < s.size(); i++){
         int j = p[i - 1];
