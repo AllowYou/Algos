@@ -3,27 +3,29 @@ struct Lowest_Common_Ancestor
     vector<vector<int>> LCA;
     vector<int> Degree;
 
-    void dfs(int u, int p, vector<vector<int>> &tree)
+    void dfs(int u, int p)
     {
         LCA[u][0] = p;
-        for (auto &x : tree[u])
+        for (auto &x : graph[u])
         {
             if (x != p)
             {
                 Degree[x] = Degree[u] + 1;
-                dfs(x, u, tree);
+                dfs(x, u);
             }
         }
     }
 
-    Lowest_Common_Ancestor(vector<vector<int>> &tree)
+    Lowest_Common_Ancestor()
     {
-        LCA.resize(tree.size(), vector<int>((int)(log2(tree.size())) + 1));
-        Degree.resize(tree.size(), 1);
+        LCA.clear();
+        Degree.clear();
+        LCA.resize(graph.size(), vector<int>((int)(log2(graph.size())) + 1));
+        Degree.resize(graph.size(), 1);
 
-        dfs(1, -1, tree);
+        dfs(1, -1);
 
-        for (int i = 1; i <= tree.size() - 1; i++)
+        for (int i = 1; i < graph.size(); i++)
             for (int j = 1; j < LCA[i].size(); j++)
                 if (LCA[i][j - 1] == -1)
                     LCA[i][j] = -1;
@@ -33,7 +35,8 @@ struct Lowest_Common_Ancestor
 
     void binary_shifting(int &X, int k)
     {
-        for (int i = LCA[X].size(); i >= 0; i--)
+        int p = LCA[X].size() - 1;
+        for (int i = p; k > 0; i--)
         {
             if (k >= (1 << i))
             {
@@ -43,28 +46,38 @@ struct Lowest_Common_Ancestor
         }
     }
 
-    int lca(int X, int Y)
+    int father(int X, int Y)
     {
         if (Degree[X] < Degree[Y])
             swap(X, Y);
         if (Degree[X] != Degree[Y])
             binary_shifting(X, Degree[X] - Degree[Y]);
-        int k = LCA[0].size() - 1;
-        while (X != Y)
-        {
-            int l = 0, r = k;
-            while (l < r)
-            {
-                int m = (l + r + 1) >> 1;
-                if (LCA[X][m] == LCA[Y][m])
-                    r = m - 1;
-                else
-                    l = m;
+        for(int k = LCA[0].size() - 1; k >= 0; k --){
+            if(LCA[X][k] != LCA[Y][k]){
+                X = LCA[X][k];
+                Y = LCA[Y][k];
             }
-            X = LCA[X][l];
-            Y = LCA[Y][l];
-            k = l;
         }
+        if(X != Y)
+            X = LCA[X][0];
         return X;
+    }
+
+    int dist(int X, int Y){
+        int ans = 0;
+        if(Degree[X] < Degree[Y])
+            swap(X, Y);
+        if(Degree[X] != Degree[Y])
+            ans += Degree[X] - Degree[Y], binary_shifting(X, Degree[X] - Degree[Y]);
+        for(int k = LCA[0].size() - 1; k >= 0; k --){
+            if(LCA[X][k] != LCA[Y][k]){
+                X = LCA[X][k];
+                Y = LCA[Y][k];
+                ans += (1 << (k + 1));
+            }
+        }
+        if(X != Y)
+            ans += 2;
+        return ans;
     }
 };
