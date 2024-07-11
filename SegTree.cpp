@@ -4,7 +4,7 @@ struct SegTree
     vector<int> tree;
 
     inline int merge(int a, int b){
-        return y = a ^ b;
+        return a ^ b;
     }
 
     SegTree(vector<int> &a)
