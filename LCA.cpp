@@ -25,8 +25,8 @@ struct Lowest_Common_Ancestor
 
         dfs(1, -1);
 
-        for (int i = 1; i < graph.size(); i++)
-            for (int j = 1; j < LCA[i].size(); j++)
+        for (int j = 1; j < LCA[i].size(); j++)
+            for (int i = 1; i < graph.size(); i++)
                 if (LCA[i][j - 1] == -1)
                     LCA[i][j] = -1;
                 else
