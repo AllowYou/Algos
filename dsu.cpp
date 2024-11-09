@@ -28,7 +28,6 @@ struct dsu
             swap(x, y);
         root[y] = x;
         size[x] += size[y];
-        ans--;
         mx = max(mx, size[x]);
     }
 };
