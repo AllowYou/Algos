@@ -1,23 +1,18 @@
-struct Lowest_Common_Ancestor
-{
+struct Lowest_Common_Ancestor{
     vector<vector<int>> LCA;
     vector<int> Degree;
 
-    void dfs(int u, int p)
-    {
+    void dfs(int u, int p){
         LCA[u][0] = p;
-        for (auto &x : graph[u])
-        {
-            if (x != p)
-            {
+        for (auto &x : graph[u]){
+            if (x != p){
                 Degree[x] = Degree[u] + 1;
                 dfs(x, u);
             }
         }
     }
 
-    Lowest_Common_Ancestor()
-    {
+    Lowest_Common_Ancestor(){
         LCA.clear();
         Degree.clear();
         LCA.resize(graph.size(), vector<int>((int)(log2(graph.size())) + 1));
@@ -33,21 +28,17 @@ struct Lowest_Common_Ancestor
                     LCA[i][j] = LCA[LCA[i][j - 1]][j - 1];
     }
 
-    void binary_shifting(int &X, int k)
-    {
+    void binary_shifting(int &X, int k){
         int p = LCA[X].size() - 1;
-        for (int i = p; k > 0; i--)
-        {
-            if (k >= (1 << i))
-            {
+        for (int i = p; k > 0; i--){
+            if (k >= (1 << i)){
                 X = LCA[X][i];
                 k -= (1 << i);
             }
         }
     }
 
-    int father(int X, int Y)
-    {
+    int father(int X, int Y){
         if (Degree[X] < Degree[Y])
             swap(X, Y);
         if (Degree[X] != Degree[Y])
