@@ -1,0 +1,16 @@
+struct Query {
+ 
+    int l, r, id;
+    Query (int lx, int rx, int idx){
+        l = lx, r = rx, id = idx;
+    }
+    
+    bool operator < (const Query &o) const {
+        if(l / block_size != o.l / block_size)
+            return l < o.l;
+        if(r / block_size != o.r / block_size)
+            return r < o.r;
+        return id < o.id;
+    }
+};
+ 
