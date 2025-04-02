@@ -1,0 +1,57 @@
+struct node {
+
+    int left = -1, right = -1, id = -1;
+
+};
+
+struct DynamicSegmentTree {
+
+    vector<node> tree;
+
+    DynamicSegmentTree () {
+        tree.push_back(node());
+    }
+
+    int get(int i, int x, int lx, int rx){
+        if(tree[x].id != -1)
+            return tree[x].id;
+        if(rx == lx)
+            return -1;
+        int mid = (lx + rx) >> 1;
+        if(i <= mid){
+            if(tree[x].left == -1)
+                tree[x].left = (int)tree.size(), tree.push_back(node());
+            return get(i, tree[x].left, lx, mid);
+        }
+        else{
+            if(tree[x].right == -1)
+                tree[x].right = (int)tree.size(), tree.push_back(node());
+            return get(i, tree[x].right, mid + 1, rx);
+        }
+    }
+
+    int get(int i){
+        return get(i, 0, 1, 1e9);
+    }
+
+    void set(int l, int r, int k, int x, int lx, int rx){
+        if(l <= lx and rx <= r){
+            tree[x].id = k;
+            return;
+        }
+        if(r < lx or rx < l)
+            return;
+        tree[x].id = -1;
+        int mid = (lx + rx) >> 1;
+        if(tree[x].left == -1)
+            tree[x].left = (int)tree.size(), tree.push_back(node());
+        if(tree[x].right == -1)
+            tree[x].right = (int)tree.size(), tree.push_back(node());
+        set(l, r, k, tree[x].left, lx, mid);
+        set(l, r, k, tree[x].right, mid + 1, rx);
+    }
+
+    void set(int l, int r, int k){
+        set(l, r, k, 0, 1, 1e9);
+    }
+};
