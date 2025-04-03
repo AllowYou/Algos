@@ -1,0 +1,57 @@
+struct Centroid {
+
+    vector<int> cnt;
+    vector<bool> used;
+    int sz = -1;
+
+    Centroid (){
+        sz = (int)graph.size();
+        cnt.resize(sz);
+        used.resize(sz);
+        middle(1, sz - 1, 0);
+    }
+
+    void count(int n, int p){
+        cnt[n] = 1;
+        for(auto x : graph[n]){
+            if(x != p and !used[x]){
+                count(x, n);
+                cnt[n] += cnt[x];
+            }
+        }
+    }
+
+    void midd(int &n, int p, int sze){
+        for(auto x : graph[n]){
+            if(x != p and !used[x]){
+                if(cnt[x] > sze / 2){
+                    midd(x, n, sze);
+                    n = x;
+                    return;
+                }
+            }
+        }
+    }
+
+    void middle(int n, int sze, int step){
+        count(n, -1);
+        midd(n, -1, sze);
+        used[n] = true;
+        ans[n] = step;
+        int sum = 0, index = -1;
+        for(auto x : graph[n]){
+            if(!used[x]){
+                if(cnt[x] < cnt[n]){
+                    sum += cnt[x];
+                    middle(x, cnt[x], step + 1); 
+                }
+                else{
+                    index = x;
+                }
+            }
+        }
+        if(index != -1)
+            middle(index, sze - sum, step + 1);
+    }
+
+};
